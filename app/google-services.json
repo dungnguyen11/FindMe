@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "20566223554",
+    "firebase_url": "https://findme-d2m12y2017.firebaseio.com",
+    "project_id": "findme-d2m12y2017",
+    "storage_bucket": "findme-d2m12y2017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:20566223554:android:790603f9b8eda083",
+        "android_client_info": {
+          "package_name": "com.example.sam.findme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "20566223554-p0umt5b16b2ukomil88p43o699j13qsi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqhm_GkxfCu8JGRHRp9P5GpLMmgesAjKA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
