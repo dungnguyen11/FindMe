@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -152,10 +154,10 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
     }
 
     private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS){
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)){
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RES_REQUEST).show();
+            if (GoogleApiAvailability.getInstance().isUserResolvableError(resultCode)){
+                GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, PLAY_SERVICES_RES_REQUEST).show();
             } else {
                 Toast.makeText(this, "This device is not supported", Toast.LENGTH_SHORT).show();
                 finish();
@@ -182,7 +184,7 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
                         //TODO: Doing
                         if (!model.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
                             Intent map = new Intent(ListOnline.this, MapsActivity.class);
-                            map.putExtra("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                            map.putExtra("email", model.getEmail());
                             map.putExtra("lat", mLastLocation.getLatitude());
                             map.putExtra("lng", mLastLocation.getLongitude());
                             startActivity(map);
