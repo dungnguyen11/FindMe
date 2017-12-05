@@ -1,14 +1,14 @@
 package com.example.sam.findme;
 
-import android.*;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -32,8 +32,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.ProcessingInstruction;
 
 public class ListOnline extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -175,15 +173,22 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
                 counterRef
         ) {
             @Override
-            protected void populateViewHolder(ListOnlineViewHolder viewHolder, User model, int position) {
+            protected void populateViewHolder(ListOnlineViewHolder viewHolder, final User model, int position) {
                 viewHolder.txtEmail.setText(model.getEmail());
 
                 viewHolder.itemClickListener = new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position) {
                         //TODO: Doing
+                        if (!model.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                            Intent map = new Intent(ListOnline.this, MapsActivity.class);
+                            map.putExtra("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                            map.putExtra("lat", mLastLocation.getLatitude());
+                            map.putExtra("lng", mLastLocation.getLongitude());
+                            startActivity(map);
+                        }
                     }
-                }
+                };
             }
         };
         adapter.notifyDataSetChanged();
