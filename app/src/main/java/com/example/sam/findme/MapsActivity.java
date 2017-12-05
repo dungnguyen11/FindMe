@@ -4,6 +4,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,8 @@ import java.text.DecimalFormat;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private final String TAG = "MapsActivity";
+
     private GoogleMap mMap;
 
     private String email;
@@ -36,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Log.d(TAG, "onCreate");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -78,11 +82,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //Create function calculate distance between location
                     distance(currentUser, friend);
 
+                    //Clear old marker
+                    mMap.clear();
+
                     //Add friend marker on Map
                     mMap.addMarker(new MarkerOptions()
                             .position(friendLocation)
                             .title(tracking.getEmail())
-                            .snippet("Distance " + new DecimalFormat("#.#").format(distance(currentUser, friend)))
+                            .snippet("Distance " + new DecimalFormat("#.#").format(distance(currentUser, friend)) + " km")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng),12.0f));
@@ -128,5 +135,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onStart");
     }
 }

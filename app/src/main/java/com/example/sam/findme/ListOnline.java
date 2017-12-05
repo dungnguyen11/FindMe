@@ -39,6 +39,8 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
 
+    private final String TAG = "ListOnline";
+
     DatabaseReference onlineRef, currentUserRef, counterRef, locations;
     FirebaseRecyclerAdapter<User, ListOnlineViewHolder> adapter;
 
@@ -60,6 +62,7 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_online);
+        Log.d(TAG, "onCreate");
 
         listOnline = findViewById(R.id.listOnline);
         listOnline.setHasFixedSize(true);
@@ -302,22 +305,44 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart");
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+    
     @Override
     protected void onStop() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
         super.onStop();
+        Log.d(TAG, "onStop");
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServices();
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
     }
 }
