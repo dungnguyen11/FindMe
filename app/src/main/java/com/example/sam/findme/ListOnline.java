@@ -1,9 +1,15 @@
 package com.example.sam.findme;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,7 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ListOnline extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener, SensorEventListener{
 
     private final String TAG = "ListOnline";
 
@@ -53,6 +59,11 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    //Sensor
+    private SensorManager mSensorManager;
+    private Sensor mLight;
+    private Float luxFloat;
+
     private static int UPDATE_INTERVAL = 5000;
     private static int FASTEST_INTERVAL = 3000;
     private static int DISTANCE = 10;
@@ -63,6 +74,10 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_online);
         Log.d(TAG, "onCreate");
+
+        //Sensor
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         listOnline = findViewById(R.id.listOnline);
         listOnline.setHasFixedSize(true);
@@ -190,6 +205,7 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
                             map.putExtra("email", model.getEmail());
                             map.putExtra("lat", mLastLocation.getLatitude());
                             map.putExtra("lng", mLastLocation.getLongitude());
+                            map.putExtra("light", luxFloat);
                             startActivity(map);
                         }
                     }
@@ -317,6 +333,7 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
         super.onResume();
         checkPlayServices();
         Log.d(TAG, "onResume");
+        mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -345,4 +362,18 @@ public class ListOnline extends AppCompatActivity implements GoogleApiClient.Con
         super.onDestroy();
         Log.d(TAG, "onDestroy");
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float lux = event.values[0];
+        luxFloat = new Float(lux);
+        Log.d(TAG, "onSensorChanged");
+        Toast.makeText(this, "Light sensor: " + String.valueOf(luxFloat), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 }

@@ -1,10 +1,16 @@
 package com.example.sam.findme;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,17 +29,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private final String TAG = "MapsActivity";
 
     private GoogleMap mMap;
-
     private String email;
-
     DatabaseReference locations;
-
     Double lat, lng;
+
+    Float lux;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +50,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+
         locations = FirebaseDatabase.getInstance().getReference("Locations");
 
         if (getIntent() != null) {
             email = getIntent().getStringExtra("email");
             lat = getIntent().getDoubleExtra("lat", 0);
             lng = getIntent().getDoubleExtra("lng", 0);
+            lux = getIntent().getFloatExtra("light", 0);
         }
 
         if (!TextUtils.isEmpty(email)) {
             loadLocationForThisUser(email);
         }
+
+
     }
 
     private void loadLocationForThisUser(String email) {
@@ -89,7 +99,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.addMarker(new MarkerOptions()
                             .position(friendLocation)
                             .title(tracking.getEmail())
-                            .snippet("Distance " + new DecimalFormat("#.#").format(distance(currentUser, friend)) + " km")
+                            .snippet("Distance " + new DecimalFormat("#.#").format(distance(currentUser, friend)))
+//                            .snippet("My light sensor: " + lux)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng),12.0f));
@@ -166,4 +177,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onDestroy();
         Log.d(TAG, "onStart");
     }
+
+
 }
